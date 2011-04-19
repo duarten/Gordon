@@ -1,0 +1,43 @@
+TARGETNAME = SnFlash
+TARGETTYPE = DRIVER
+
+KMDF_VERSION_MAJOR = 1
+
+C_DEFINES = $(C_DEFINES) -D_WIN2K_COMPAT_SLIST_USAGE -DTRACE_ON
+
+INCLUDES = $(INCLUDES);..\inc
+
+TARGETLIBS = $(TARGETLIBS) $(DDK_LIB_PATH)\ntstrsafe.lib \
+                           $(DDK_LIB_PATH)\wdmsec.lib 
+
+SOURCES = \
+	Driver.c \
+	Device.c \
+	ReadWrite.c   \
+	IoCtl.c  \
+	Spi.c    \
+	Lpc.c \
+	Version.rc
+	
+#
+# Comment the below line to disable tracing.
+ENABLE_EVENT_TRACING=1
+
+!IFDEF ENABLE_EVENT_TRACING
+
+C_DEFINES = $(C_DEFINES) -DEVENT_TRACING
+
+#
+# Generate WPP tracing code
+# $(SOURCES)   -- run software preprocessor on files listed in SOURCES
+# -km          -- use kernel mode
+# -func        -- define function we'll use for tracing
+#                 This would map all TraceEvents calls to 
+#                 DoTraceMessage.
+#
+RUN_WPP= $(SOURCES)                            		\
+					-km                                   	\
+					-func:TraceEvents(LEVEL,FLAGS,MSG,...)	\
+					-gen:{km-WdfDefault.tpl}*.tmh
+
+!ENDIF					

@@ -1,0 +1,8 @@
+[Version]
+Signature="$WINDOWS NT$"
+
+[Gordon.NT.Wdf]
+KmdfService = Gordon, Gordon_Service_kmdfInst
+
+[Gordon_Service_kmdfInst]
+KmdfLibraryVersion = 1.9

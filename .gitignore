@@ -1,0 +1,6 @@
+[Bb]in
+objchk_*/
+*.log
+*.old
+*.aps
+cp.cmd
