@@ -29,8 +29,6 @@ __user_code
 
 #include "Public.h"
 
-#include <wdfinstaller.h>
-
 // 4127 -- Conditional Expression is Constant warning
 #define WHILE(a) \
     while (__pragma(warning(disable:4127)) a __pragma(warning(disable:4127)))
@@ -46,7 +44,7 @@ __user_code
 
 VOID
 PrintError (
-    __in PCHAR Prefix,
+    __in LPSTR Prefix,
     __in_opt ULONG ErrorCode 
     );
 
@@ -61,13 +59,13 @@ UnloadWdfCoInstaller (
 
 BOOL
 FindAndCopyDriver (
-    __out_bcount_full(BufferLength) PCHAR DriverLocation,
+    __out_bcount_full(BufferLength) LPSTR DriverLocation,
     __in ULONG BufferLength
     );
 
 BOOL
 ManageDriver(
-    __in LPCTSTR DriverName,
-    __in LPCTSTR DriverLocation,
+    __in LPSTR DriverName,
+    __in LPSTR DriverLocation,
     __in USHORT Function
     );

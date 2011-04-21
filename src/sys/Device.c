@@ -175,7 +175,7 @@ Return Value:
     // Initialize the LPC IoTarget and map the RCRB into virtual memory.
     //
     
-    //InitializeContext(ControlDevice);
+    InitializeContext(ControlDevice);
         
     //
     // Create a symbolic link for the control object so that applications can open
@@ -218,9 +218,8 @@ Return Value:
 
 End:
     //
-    // If the device is created successfully, the framework clears the
-    // DeviceInit value. Otherwise, device creation must have failed so we
-    // should free the memory ourselves.
+    // If the device is created successfully, the framework clears the DeviceInit value. 
+    // Otherwise, device creation must have failed so we should free the memory ourselves.
     //
 
     if (DeviceInit != NULL) {

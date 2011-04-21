@@ -164,14 +164,22 @@ EvtIoDeviceControl(
     PAGED_CODE();
 
     TraceEvents(TRACE_LEVEL_VERBOSE, DBG_IOCTLS, "--> EvtIoDeviceControl(%x)\n", IoControlCode);
+
+    //
+    // Get the pointer to the device's context area.
+    // We are using the queue handle to get the device handle.
+    //
+    
+    DeviceContext = GetDeviceContext(WdfIoQueueGetDevice(IoQueue));
+    Information = 0;
     
     switch(IoControlCode) {
         case IOCTL_SHOW_DATA:
             //Status = EraseFirstSector(WdfIoQueueGetDevice(IoQueue));
-            DeviceContext = GetDeviceContext(WdfIoQueueGetDevice(IoQueue));
-            ShowFwhRegisters(DeviceContext->Lpc);
-            ShowRcrbRegisters(DeviceContext->Rcrb);
-            ShowSpiRegisters(DeviceContext->Rcrb + SPIBAR_OFFSET);
+            //ShowFwhRegisters(DeviceContext->Lpc);
+            //ShowRcrbRegisters(DeviceContext->Rcrb);
+            //ShowSpiRegisters(DeviceContext->Rcrb + SPIBAR_OFFSET);
+            Status = STATUS_SUCCESS;
             break;
         
         default:
@@ -183,7 +191,7 @@ EvtIoDeviceControl(
     // Complete the I/O request
     //
     
-    WdfRequestComplete(Request, Status);
+    WdfRequestCompleteWithInformation(Request, Status, Information);
     
     TraceEvents(TRACE_LEVEL_VERBOSE, DBG_IOCTLS, "<-- EvtIoDeviceControl(%x)\n", IoControlCode);
 }

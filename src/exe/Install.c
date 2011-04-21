@@ -2,16 +2,18 @@
 
 #define ARRAY_SIZE(x) (sizeof(x) /sizeof(x[0]))
 
-PFN_WDFPREDEVICEINSTALL FnWdfPreDeviceInstall;
-PFN_WDFPOSTDEVICEINSTALL FnWdfPostDeviceInstall;
-PFN_WDFPREDEVICEREMOVE FnWdfPreDeviceRemove;
-PFN_WDFPOSTDEVICEREMOVE FnWdfPostDeviceRemove;
+typedef ULONG (*WdfInstallCallback)(LPCWSTR InfPath, LPCWSTR InfSectionName);
 
-#define GET_PROC(name, type)                                            \
-    Fn##name = (type) GetProcAddress(Library, #name);                   \
+WdfInstallCallback FnWdfPreDeviceInstall;
+WdfInstallCallback FnWdfPostDeviceInstall;
+WdfInstallCallback FnWdfPreDeviceRemove;
+WdfInstallCallback FnWdfPostDeviceRemove;
+
+#define GET_PROC(name)                                                  \
+    Fn##name = (WdfInstallCallback) GetProcAddress(Library, #name);     \
     if (Fn##name == NULL) {                                             \
         Error = GetLastError();                                         \
-        PrintError("GetProcAddress(\"" #name "\") failed", Error);      \
+        PrintError("GetProcAddress(\"" #name "\") failed", Error);   \
         return NULL;                                                    \
     }
 
@@ -215,8 +217,8 @@ StopDriver (
 
 BOOL
 ManageDriver (
-    __in LPCTSTR DriverName,
-    __in LPCTSTR DriverLocation,
+    __in LPSTR DriverName,
+    __in LPSTR DriverLocation,
     __in USHORT Function
     )
 {
@@ -266,9 +268,9 @@ ManageDriver (
 static
 BOOL
 BuildDriversDirPath(
-    __out_bcount_full(BufferLength) PCHAR DriverLocation,
+    __out_bcount_full(BufferLength) LPSTR DriverLocation,
     __in ULONG BufferLength,
-    __in PCHAR DriverName
+    __in LPSTR DriverName
     )
 {
     LONG Length;
@@ -307,7 +309,7 @@ BuildDriversDirPath(
 
 BOOL
 FindAndCopyDriver (
-    __out_bcount_full(BufferLength) PCHAR DriverLocation,
+    __out_bcount_full(BufferLength) LPSTR DriverLocation,
     __in ULONG BufferLength
     )
 {
@@ -340,7 +342,7 @@ FindAndCopyDriver (
                             NULL);
 
     if (FileHandle == INVALID_HANDLE_VALUE) {
-        printf("Driver: " DRIVER_NAME ".sys is not in the %s directory. \n", DriverLocation );
+        printf("Driver: " DRIVER_NAME ".sys is not in the %s directory. \n", DriverLocation);
         return FALSE;
     }
 
@@ -373,31 +375,29 @@ LoadWdfCoInstaller (
 
     if (GetCurrentDirectory(MAX_PATH, Path) == 0) {
         PrintError("GetCurrentDirectory failed", GetLastError());
-        goto End;
+        return NULL;
     }
 
     if (FAILED(StringCchCat(Path, MAX_PATH, CoInstallerPath))) {
-        goto End;
+        return NULL;
     }
 
 #pragma prefast(suppress:28160, "Suppressing false positive from PFD")        
     Library = LoadLibrary(Path);
         
     if (Library == NULL) {
-        Error = GetLastError();
-        PrintError("LoadLibrary failed", Error);
-        goto End;
+        PrintError("LoadLibrary failed", GetLastError());
+        return NULL;
     }
 
-    GET_PROC(WdfPreDeviceInstall, PFN_WDFPREDEVICEINSTALL);
-    GET_PROC(WdfPostDeviceInstall, PFN_WDFPOSTDEVICEINSTALL);
-    GET_PROC(WdfPreDeviceRemove, PFN_WDFPREDEVICEREMOVE);
-    GET_PROC(WdfPostDeviceRemove, PFN_WDFPOSTDEVICEREMOVE);
+    GET_PROC(WdfPreDeviceInstall);
+    GET_PROC(WdfPostDeviceInstall);
+    GET_PROC(WdfPreDeviceRemove);
+    GET_PROC(WdfPostDeviceRemove);
 
-End:
-    if (Error != ERROR_SUCCESS && Library != NULL) {
+    if (Error != ERROR_SUCCESS) {
         FreeLibrary(Library);
-        Library = NULL;
+        return NULL;
     }
 
     return Library;

@@ -16,26 +16,6 @@ Environment:
 #if !defined(EVENT_TRACING)
 
 //
-// TODO: These defines are missing in evntrace.h
-// in some DDK build environments (XP).
-//
-
-#if !defined(TRACE_LEVEL_NONE)
-  #define TRACE_LEVEL_NONE        0
-  #define TRACE_LEVEL_CRITICAL    1
-  #define TRACE_LEVEL_FATAL       1
-  #define TRACE_LEVEL_ERROR       2
-  #define TRACE_LEVEL_WARNING     3
-  #define TRACE_LEVEL_INFORMATION 4
-  #define TRACE_LEVEL_VERBOSE     5
-  #define TRACE_LEVEL_RESERVED6   6
-  #define TRACE_LEVEL_RESERVED7   7
-  #define TRACE_LEVEL_RESERVED8   8
-  #define TRACE_LEVEL_RESERVED9   9
-#endif
-
-
-//
 // Define Debug Flags
 //
 
@@ -80,13 +60,13 @@ TraceEvents (
 // that are used to control the level of tracing for the control guid
 // specified.
 //
-// Name of the logger is GordonTrace and the guid is {75216E73-45C1-475C-B518-6A67B9153AEE}
+// Name of the logger is GordonTrace and the guid is {684B42AD-7C9F-4AAC-ACD5-A9EEFEE57376}
 //
 
 #define WPP_CHECK_FOR_NULL_STRING  //to prevent exceptions due to NULL strings
 
 #define WPP_CONTROL_GUIDS \
-    WPP_DEFINE_CONTROL_GUID(GordonTrace,(75216E73,45C1,475C,B518,6A67B9153AEE), \
+    WPP_DEFINE_CONTROL_GUID(GordonTrace,(684B42AD,7C9F,4AAC,ACD5,A9EEFEE57376), \
         WPP_DEFINE_BIT(DBG_INIT)             /* bit  0 = 0x00000001 */ \
         WPP_DEFINE_BIT(DBG_PNP)              /* bit  1 = 0x00000002 */ \
         WPP_DEFINE_BIT(DBG_POWER)            /* bit  2 = 0x00000004 */ \

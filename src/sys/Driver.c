@@ -89,7 +89,7 @@ Return Value:
     // WPP Tracing after the WDFDRIVER object is created to ensure that we cleanup WPP properly
     // if DriverEntry fails. This eliminates the need to call WPP_CLEANUP in every path of DriverEntry. 
     // We cannot do this in the unload callback beacause the framework does not call it if we return 
-    // an error status values from DriverEntry.
+    // an error status value from DriverEntry.
     //
 
     WPP_INIT_TRACING(DriverObject, RegistryPath);

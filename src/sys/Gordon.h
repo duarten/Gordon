@@ -35,7 +35,7 @@ Environment:
 #define PHYS_DEVICE_NAME	L"\\Device\\Gordon"
 #define SYMBOLIC_NAME		L"\\DosDevices\\Gordon"
 
-#define LPC_DEVICE			L"\\Device\\NTPNP_PCI0016"
+#define LPC_DEVICE			L"\\Device\\NTPNP_PCI0021"
 
 #define BIOS_SIZE			0x200000
 #define BIOS_END			0xFFFFFFFF
